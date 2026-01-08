@@ -1,0 +1,60 @@
+<div class="min-h-screen bg-gray-100 flex items-center justify-center py-12 px-4">
+  <div class="max-w-md w-full bg-white p-8 border border-gray-300 rounded-lg shadow-sm">
+    <%# Logo %>
+    <div class="text-center mb-8">
+      <%= link_to root_path, class: "text-3xl font-bold italic text-black" do %>
+        amazon<span class="text-orange-400">pro</span>
+      <% end %>
+    </div>
+
+    <h2 class="text-2xl font-medium mb-6">Criar conta</h2>
+
+    <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+      
+      <%# MENSAGENS DE ERRO (Aqui é onde aparece o erro de "senha muito curta") %>
+      <% if resource.errors.any? %>
+        <div class="mb-4 p-4 border-2 border-red-600 rounded bg-white">
+          <h4 class="text-red-600 font-bold text-lg mb-1 flex items-center gap-2">
+            ⚠️ Houve um problema
+          </h4>
+          <ul class="text-sm text-gray-800 list-disc list-inside">
+            <% resource.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <div class="mb-4">
+        <%= f.label :email, "E-mail", class: "block text-sm font-bold mb-1" %>
+        <%= f.email_field :email, autofocus: true, autocomplete: "email", 
+            class: "w-full border border-gray-400 px-3 py-2 rounded focus:border-orange-500 focus:shadow-[0_0_3px_2px_rgba(228,121,17,0.5)] outline-none shadow-sm transition-all" %>
+      </div>
+
+      <div class="mb-4">
+        <%= f.label :password, "Senha", class: "block text-sm font-bold mb-1" %>
+        <%= f.password_field :password, autocomplete: "new-password", placeholder: "Pelo menos 6 caracteres",
+            class: "w-full border border-gray-400 px-3 py-2 rounded focus:border-orange-500 focus:shadow-[0_0_3px_2px_rgba(228,121,17,0.5)] outline-none shadow-sm transition-all" %>
+        <p class="text-[11px] text-gray-600 mt-1 italic">ℹ️ As senhas devem ter pelo menos 6 caracteres.</p>
+      </div>
+
+      <div class="mb-6">
+        <%= f.label :password_confirmation, "Confirmar senha", class: "block text-sm font-bold mb-1" %>
+        <%= f.password_field :password_confirmation, autocomplete: "new-password", 
+            class: "w-full border border-gray-400 px-3 py-2 rounded focus:border-orange-500 focus:shadow-[0_0_3px_2px_rgba(228,121,17,0.5)] outline-none shadow-sm transition-all" %>
+      </div>
+
+      <%= f.submit "Verificar e-mail", 
+          class: "w-full bg-[#f0c14b] hover:bg-[#edb021] border border-[#a88734] py-2 rounded shadow-sm cursor-pointer font-medium text-sm" %>
+    <% end %>
+
+    <div class="mt-6 text-xs text-gray-700 leading-tight">
+      Ao criar uma conta, você concorda com as <span class="text-blue-700 hover:underline cursor-pointer">Condições de Uso</span> e a <span class="text-blue-700 hover:underline cursor-pointer">Notificação de Privacidade</span> da Amazon Pro.
+    </div>
+
+    <div class="border-t mt-6 pt-6 text-sm">
+      Já tem uma conta? 
+      <%= link_to "Fazer login ▸", new_session_path(resource_name), class: "text-blue-700 hover:underline font-medium" %>
+    </div>
+  </div>
+</div>

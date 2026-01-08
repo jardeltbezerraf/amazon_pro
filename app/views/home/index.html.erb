@@ -1,0 +1,67 @@
+<div class="bg-gray-100 min-h-screen w-full">
+  <%# Banner / Carrossel %>
+  <div class="relative w-full max-w-[1500px] mx-auto overflow-hidden">
+    <div class="swiper mySwiper h-[220px] md:h-[500px] w-full relative">
+      <div class="swiper-wrapper">
+        <div class="swiper-slide">
+          <img src="https://m.media-amazon.com/images/I/61lwJy4B8PL._SX3000_.jpg" class="w-full h-full object-cover object-top">
+        </div>
+        <div class="swiper-slide">
+          <img src="https://m.media-amazon.com/images/I/71Ie3JXGfVL._SX3000_.jpg" class="w-full h-full object-cover object-top">
+        </div>
+      </div>
+      <div class="swiper-button-next !text-gray-800 !right-4"></div>
+      <div class="swiper-button-prev !text-gray-800 !left-4"></div>
+      <div class="absolute bottom-0 left-0 w-full h-32 md:h-64 bg-gradient-to-t from-gray-100 to-transparent z-10 pointer-events-none"></div>
+    </div>
+
+    <%# Grade de Produtos %>
+    <div class="relative z-20 -mt-16 md:-mt-48 px-4 md:px-8 pb-10 w-full">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-full mx-auto">
+        <% if @products.any? %>
+          <% @products.each do |product| %>
+            <div class="bg-white p-5 shadow-md flex flex-col justify-between hover:shadow-lg transition border border-transparent hover:border-gray-200">
+              <div>
+                <%= link_to product_path(product), class: "group" do %>
+                  <h2 class="text-lg font-bold text-gray-800 mb-2 line-clamp-2 h-14 group-hover:text-orange-700"><%= product.name %></h2>
+                  <div class="h-48 w-full flex items-center justify-center mb-4 bg-gray-50 rounded">
+                    <span class="text-6xl group-hover:scale-110 transition-transform">📦</span>
+                  </div>
+                <% end %>
+                
+                <div class="flex items-baseline gap-1 mt-2">
+                  <span class="text-xs font-bold">R$</span>
+                  <span class="text-2xl font-bold"><%= number_with_precision(product.price, precision: 2) %></span>
+                </div>
+              </div>
+              
+              <div class="mt-4 space-y-2">
+                <%= button_to "Adicionar ao carrinho", add_to_cart_path(product), method: :post, 
+                    class: "w-full bg-[#ffd814] hover:bg-[#f7ca00] py-2 rounded-lg text-sm border border-[#fcd200] cursor-pointer font-medium shadow-sm" %>
+                
+                <%# Alterado para GET: leva o usuário para a tela de checkout primeiro %>
+                <%= link_to "Comprar agora", new_checkout_path(product_id: product.id), 
+                    class: "w-full bg-[#ffa41c] hover:bg-[#fa8900] py-2 rounded-lg text-sm border border-[#ee9105] cursor-pointer font-medium shadow-sm text-center block" %>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function initSwiper() {
+    if (document.querySelector('.mySwiper')) {
+      new Swiper(".mySwiper", {
+        navigation: { nextEl: ".swiper-button-next", prevEl: ".swiper-button-prev" },
+        loop: true,
+        autoplay: { delay: 5000 },
+        observer: true,
+        observeParents: true
+      });
+    }
+  }
+  document.addEventListener('turbo:load', initSwiper);
+</script>

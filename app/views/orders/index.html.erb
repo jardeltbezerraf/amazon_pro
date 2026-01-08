@@ -1,0 +1,86 @@
+<div class="container mx-auto max-w-5xl py-8 px-4" x-data="{ tab: 'confirmados' }">
+  <h1 class="text-3xl font-medium mb-6 text-gray-900">Seus Pedidos</h1>
+
+  <%# Menu de Abas %>
+  <div class="flex border-b border-gray-300 mb-6">
+    <button 
+      type="button"
+      @click="tab = 'confirmados'" 
+      :class="tab === 'confirmados' ? 'border-orange-500 text-black border-b-2' : 'text-gray-500 border-b-2 border-transparent'"
+      class="px-6 py-2 font-bold transition-all duration-200 cursor-pointer focus:outline-none">
+      Confirmados (<%= @confirmed_orders.count %>)
+    </button>
+    <button 
+      type="button"
+      @click="tab = 'cancelados'" 
+      :class="tab === 'cancelados' ? 'border-orange-500 text-black border-b-2' : 'text-gray-500 border-b-2 border-transparent'"
+      class="px-6 py-2 font-bold transition-all duration-200 cursor-pointer focus:outline-none">
+      Cancelados (<%= @cancelled_orders.count %>)
+    </button>
+  </div>
+
+  <%# Conteúdo Aba: Confirmados %>
+  <div x-show="tab === 'confirmados'" x-cloak>
+    <% if @confirmed_orders.any? %>
+      <% @confirmed_orders.each do |order| %>
+        <div class="border rounded-lg overflow-hidden bg-white shadow-sm border-gray-300 mb-6">
+          <div class="bg-gray-100 p-4 grid grid-cols-2 md:grid-cols-4 gap-4 text-xs text-gray-600 uppercase">
+            <div>PEDIDO REALIZADO <p class="font-bold text-black text-sm"><%= order.created_at.strftime("%d/%m/%Y") %></p></div>
+            <div>TOTAL <p class="font-bold text-black text-sm">R$ <%= number_with_precision(order.total_price, precision: 2) %></p></div>
+            <div>ENVIAR PARA <p class="font-bold text-blue-600 text-sm"><%= order.user.email.split('@')[0] %></p></div>
+            <div class="text-right">PEDIDO #<%= order.id %></div>
+          </div>
+          
+          <div class="p-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div class="flex gap-4 items-center">
+              <div class="text-4xl">📦</div>
+              <div>
+                <% order.order_items.each do |item| %>
+                  <p class="font-bold text-[#007185]"><%= item.product.name %> (x<%= item.quantity %>)</p>
+                <% end %>
+                <div class="mt-2 p-2 bg-blue-50 border border-blue-100 rounded">
+                  <p class="text-[10px] text-gray-500 uppercase font-bold">Rastreamento:</p>
+                  <p class="text-sm font-mono font-bold text-blue-800"><%= order.tracking_code %></p>
+                </div>
+              </div>
+            </div>
+            <div class="flex flex-col gap-2">
+              <button class="bg-[#ffd814] text-xs py-1.5 px-4 rounded-md shadow-sm border border-[#fcd200]">Rastrear pacote</button>
+              
+              <%# Ajuste na confirmação de cancelamento %>
+              <%= button_to "Cancelar Pedido", order_path(order), 
+                  method: :delete, 
+                  data: { turbo_confirm: "Tem certeza que deseja cancelar este pedido? Esta ação não pode ser desfeita." },
+                  class: "text-sm text-red-600 hover:underline cursor-pointer bg-transparent border-none p-0 text-left" %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    <% else %>
+      <p class="text-gray-500 text-center py-10">Nenhum pedido confirmado.</p>
+    <% end %>
+  </div>
+
+  <%# Conteúdo Aba: Cancelados %>
+  <div x-show="tab === 'cancelados'" x-cloak style="display: none;">
+    <% if @cancelled_orders.any? %>
+      <% @cancelled_orders.each do |order| %>
+        <div class="border rounded-lg bg-gray-50 p-4 mb-4 flex justify-between items-center opacity-70">
+          <div class="flex items-center gap-4">
+            <div class="text-3xl grayscale">📦</div>
+            <div>
+              <p class="font-bold">Pedido #<%= order.id %></p>
+              <p class="text-xs text-red-600 font-bold uppercase">Cancelado em <%= order.updated_at.strftime("%d/%m/%Y") %></p>
+            </div>
+          </div>
+          <p class="font-bold">R$ <%= number_with_precision(order.total_price, precision: 2) %></p>
+        </div>
+      <% end %>
+    <% else %>
+      <p class="text-gray-500 text-center py-10">Nenhum pedido cancelado.</p>
+    <% end %>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+<style>[x-cloak] { display: none !important; }</style>
