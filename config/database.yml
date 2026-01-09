@@ -85,20 +85,8 @@ test:
 # for a full overview on how database connection configuration can be specified.
 #
 production:
-  primary: &primary_production
-    <<: *default
-    database: amazon_pro_production
-    username: amazon_pro
-    password: <%= ENV["AMAZON_PRO_DATABASE_PASSWORD"] %>
-  cache:
-    <<: *primary_production
-    database: amazon_pro_production_cache
-    migrations_paths: db/cache_migrate
-  queue:
-    <<: *primary_production
-    database: amazon_pro_production_queue
-    migrations_paths: db/queue_migrate
-  cable:
-    <<: *primary_production
-    database: amazon_pro_production_cable
-    migrations_paths: db/cable_migrate
+  adapter: postgresql
+  encoding: unicode
+  # O Rails usa a DATABASE_URL do Render automaticamente se configurado assim:
+  url: <%= ENV['DATABASE_URL'] %>
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
